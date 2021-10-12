@@ -16,7 +16,8 @@ struct ContentView: View {
     @State private var counter = 0
     @State var displayCycle = ""
     
-    @State private var numberOfSays = 4
+    @State private var numberOfSays = 1
+    
     @State var isTimerRunning = false
     @State private var startTime = Date()
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -162,24 +163,7 @@ struct ContentView: View {
                 Spacer()
                 if #available(iOS 15.0, *) {
                     Button {
-                        if (colorStringArray != []) || (randomColorArray != []) {
-                            if colorStringArray == randomColorArray {
-//                                print("You Win!")
-                                alertMessage = "You Win!"
-                                showingAlert = true
-                                currentColor = ""
-                                color = Color.black
-                                if(numberOfSays < 4) {
-                                    numberOfSays += 1
-                                }
-                            } else {
-//                                print("Failure!")
-                                alertMessage = "You Lose!"
-                                showingAlert = true
-                                currentColor = ""
-                                color = Color.black
-                            }
-                        }
+                        checkWin()
                     } label: {
                         Text("Check Answer")
                     }
@@ -189,24 +173,7 @@ struct ContentView: View {
                 } else {
                     // Fallback on earlier versions
                     Button {
-                        if (colorStringArray != []) || (randomColorArray != []) {
-                            if colorStringArray == randomColorArray {
-//                                print("You Win!")
-                                alertMessage = "You Win!"
-                                showingAlert = true
-                                currentColor = ""
-                                color = Color.black
-                                if(numberOfSays < 4) {
-                                    numberOfSays += 1
-                                }
-                            } else {
-//                                print("Failure!")
-                                alertMessage = "You Lose!"
-                                showingAlert = true
-                                currentColor = ""
-                                color = Color.black
-                            }
-                        }
+                        checkWin()
                     } label: {
                         Text("Check Answer")
                     }
@@ -236,7 +203,22 @@ struct ContentView: View {
     }
     
     func checkWin() {
-        
+        if (!colorStringArray.isEmpty || !randomColorArray.isEmpty) && (colorStringArray.count == randomColorArray.count) {
+            if colorStringArray == randomColorArray {
+                alertMessage = "You Win!"
+                showingAlert = true
+                currentColor = ""
+                color = Color.black
+                if(numberOfSays < 4) {
+                    numberOfSays += 1
+                }
+            } else {
+                alertMessage = "You Lose!"
+                showingAlert = true
+                currentColor = ""
+                color = Color.black
+            }
+        }
     }
 }
 
