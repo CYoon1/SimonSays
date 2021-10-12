@@ -28,6 +28,11 @@ struct ContentView: View {
     
     @State var pulse = false
     
+    @State var highlightYellow = false
+    @State var highlightBlue = false
+    @State var highlightRed = false
+    @State var highlightGreen = false
+    
     var body: some View {
         VStack {
             Text(currentColor == "" ? "None" : currentColor)
@@ -81,12 +86,7 @@ struct ContentView: View {
                     }
                 }
                 Button {
-                    randomColorArray = []
-                    colorStringArray = []
-                    displayColorArray = []
-                    currentColor = ""
-                    color = Color.black
-                    displayCycle = ""
+                    resetDisplay()
                     for _ in 1...numberOfSays {
                         let randNum = Int.random(in: 0..<4)
                         if randNum == 0 {
@@ -132,6 +132,7 @@ struct ContentView: View {
                             currentColor = "Yellow"
                             color = Color.yellow
                             colorStringArray.append("Yellow")
+                            checkWin()
                         } label: {
                             ColorButtonView(title: "Yellow", color: Color.yellow)
                         }
@@ -139,6 +140,7 @@ struct ContentView: View {
                             currentColor = "Blue"
                             color = Color.blue
                             colorStringArray.append("Blue")
+                            checkWin()
                         } label: {
                             ColorButtonView(title: "Blue", color: Color.blue)
                         }
@@ -148,6 +150,7 @@ struct ContentView: View {
                             currentColor = "Red"
                             color = Color.red
                             colorStringArray.append("Red")
+                            checkWin()
                         } label: {
                             ColorButtonView(title: "Red", color: Color.red)
                         }
@@ -155,6 +158,7 @@ struct ContentView: View {
                             currentColor = "Green"
                             color = Color.green
                             colorStringArray.append("Green")
+                            checkWin()
                         } label: {
                             ColorButtonView(title: "Green", color: Color.green)
                         }
@@ -183,13 +187,7 @@ struct ContentView: View {
                 }
 
                 Button {
-                    currentColor = ""
-                    color = Color.black
-                    colorStringArray = []
-                    randomColorArray = []
-                    displayColorArray = []
-                    displayCycle = ""
-                    cycleColor = Color.black
+                    resetDisplay()
                     numberOfSays = 1
                 } label: {
                     Text("Reset")
@@ -203,6 +201,8 @@ struct ContentView: View {
     }
     
     func checkWin() {
+        // check if too many input elements
+        userInputOverflow()
         if (!colorStringArray.isEmpty || !randomColorArray.isEmpty) && (colorStringArray.count == randomColorArray.count) {
             if colorStringArray == randomColorArray {
                 alertMessage = "You Win!"
@@ -219,6 +219,25 @@ struct ContentView: View {
                 color = Color.black
             }
         }
+    }
+    func userInputOverflow() {
+        if colorStringArray.count > randomColorArray.count {
+            // Triggers when user input has more elements than the random color array
+            colorStringArray = []
+            // clears the array of user inputs.
+            currentColor = ""
+            color = Color.black
+        }
+    }
+    
+    func resetDisplay() {
+        colorStringArray = []
+        randomColorArray = []
+        displayColorArray = []
+        currentColor = ""
+        displayCycle = ""
+        color = Color.black
+        cycleColor = Color.black
     }
 }
 
