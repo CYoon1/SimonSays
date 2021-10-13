@@ -33,6 +33,8 @@ struct ContentView: View {
     @State var highlightRed = false
     @State var highlightGreen = false
     
+    let maxColors = 6
+    
     var body: some View {
         VStack {
             Text(currentColor == "" ? "None" : currentColor)
@@ -76,7 +78,7 @@ struct ContentView: View {
                 }
             HStack {
                 Button {
-                    isTimerRunning.toggle()
+                    isTimerRunning = true
                 } label: {
                     HStack {
                         Text("Play Sequence")
@@ -86,24 +88,8 @@ struct ContentView: View {
                     }
                 }
                 Button {
-                    resetDisplay()
-                    for _ in 1...numberOfSays {
-                        let randNum = Int.random(in: 0..<4)
-                        if randNum == 0 {
-                            randomColorArray.append("Yellow")
-                            displayColorArray.append(Color.yellow)
-                        } else if randNum == 1 {
-                            randomColorArray.append("Blue")
-                            displayColorArray.append(Color.blue)
-                        } else if randNum == 2 {
-                            randomColorArray.append("Red")
-                            displayColorArray.append(Color.red)
-                        } else if randNum == 3 {
-                            randomColorArray.append("Green")
-                            displayColorArray.append(Color.green)
-                        }
-                    }
-                    isTimerRunning.toggle()
+                    generateSequence()
+                    isTimerRunning = true
                 } label: {
                     Text("New Sequence")
                         .padding()
@@ -113,16 +99,12 @@ struct ContentView: View {
             }
             
             Picker("How Many Items", selection: $numberOfSays) {
-                Text("1").tag(1)
-                Text("2").tag(2)
-                Text("3").tag(3)
-                Text("4").tag(4)
-                Text("5").tag(5)
-                Text("6").tag(6)
+                ForEach((1...maxColors), id: \.self) {
+                    Text("\($0)").tag($0)
+                }
             }
             .padding()
             .pickerStyle(.segmented)
-            
             
             Group {
                 Spacer()
@@ -199,7 +181,25 @@ struct ContentView: View {
             }
         }
     }
-    
+    func generateSequence() {
+        resetDisplay()
+        for _ in 1...numberOfSays {
+            let randNum = Int.random(in: 0..<4)
+            if randNum == 0 {
+                randomColorArray.append("Yellow")
+                displayColorArray.append(Color.yellow)
+            } else if randNum == 1 {
+                randomColorArray.append("Blue")
+                displayColorArray.append(Color.blue)
+            } else if randNum == 2 {
+                randomColorArray.append("Red")
+                displayColorArray.append(Color.red)
+            } else if randNum == 3 {
+                randomColorArray.append("Green")
+                displayColorArray.append(Color.green)
+            }
+        }
+    }
     func checkWin() {
         // check if too many input elements
         userInputOverflow()
@@ -209,13 +209,15 @@ struct ContentView: View {
                 showingAlert = true
                 currentColor = ""
                 color = Color.black
-                if(numberOfSays < 4) {
+                if(numberOfSays < maxColors) {
                     numberOfSays += 1
                 }
+                generateSequence()
             } else {
                 alertMessage = "You Lose!"
                 showingAlert = true
                 currentColor = ""
+                colorStringArray = []
                 color = Color.black
             }
         }
@@ -227,6 +229,9 @@ struct ContentView: View {
             // clears the array of user inputs.
             currentColor = ""
             color = Color.black
+        } else {
+            //
+            return
         }
     }
     
