@@ -57,9 +57,22 @@ struct ContentView: View {
                                     isTimerRunning = false
                                     displayCycle = ""
                                     cycleColor = Color.black
+                                    resetButtons()
                                 } else {
                                     displayCycle = randomColorArray[self.counter]
                                     cycleColor = displayColorArray[self.counter]
+                                    if(displayCycle == "Yellow") {
+                                        highlightYellow = true
+                                    } else if (displayCycle == "Blue") {
+                                        highlightBlue = true
+                                    } else if (displayCycle == "Red") {
+                                        highlightRed = true
+                                    } else if (displayCycle == "Green") {
+                                        highlightGreen = true
+                                    } else {
+                                        print("Invalid Color")
+                                        resetButtons()
+                                    }
                                     print(self.counter)
                                     print("Color is \(randomColorArray[self.counter])")
                                     self.counter += 1
@@ -69,10 +82,12 @@ struct ContentView: View {
                                 cycleColor = Color.black
                                 displayCycle = ""
                                 pulse = true
+                                resetButtons()
                             }
                         } else {
                             counter = 0
                             isTimerRunning = false
+                            resetButtons()
                         }
                     }
                 }
@@ -116,7 +131,7 @@ struct ContentView: View {
                             colorStringArray.append("Yellow")
                             checkWin()
                         } label: {
-                            ColorButtonView(title: "Yellow", color: Color.yellow)
+                            ColorButtonView(title: "Yellow", color: Color.yellow, isHighlighted: highlightYellow)
                         }
                         Button {
                             currentColor = "Blue"
@@ -124,7 +139,7 @@ struct ContentView: View {
                             colorStringArray.append("Blue")
                             checkWin()
                         } label: {
-                            ColorButtonView(title: "Blue", color: Color.blue)
+                            ColorButtonView(title: "Blue", color: Color.blue, isHighlighted: highlightBlue)
                         }
                     }
                     HStack {
@@ -134,7 +149,7 @@ struct ContentView: View {
                             colorStringArray.append("Red")
                             checkWin()
                         } label: {
-                            ColorButtonView(title: "Red", color: Color.red)
+                            ColorButtonView(title: "Red", color: Color.red, isHighlighted: highlightRed)
                         }
                         Button {
                             currentColor = "Green"
@@ -142,7 +157,7 @@ struct ContentView: View {
                             colorStringArray.append("Green")
                             checkWin()
                         } label: {
-                            ColorButtonView(title: "Green", color: Color.green)
+                            ColorButtonView(title: "Green", color: Color.green, isHighlighted: highlightGreen)
                         }
                     }
                 }
@@ -244,6 +259,13 @@ struct ContentView: View {
         color = Color.black
         cycleColor = Color.black
     }
+    
+    func resetButtons() {
+        highlightYellow = false
+        highlightBlue = false
+        highlightRed = false
+        highlightGreen = false
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
@@ -255,6 +277,7 @@ struct ContentView_Previews: PreviewProvider {
 struct ColorButtonView: View {
     var title: String
     var color: Color
+    var isHighlighted: Bool
     
     var body: some View {
         Text(title)
@@ -264,5 +287,6 @@ struct ColorButtonView: View {
             .padding()
             .frame(width: 100, height: 100)
             .border(color, width: 5)
+            .background(isHighlighted ? color : Color.clear)
     }
 }
